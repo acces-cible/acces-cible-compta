@@ -3,19 +3,18 @@ import { supabase } from '../../lib/supabase'
 export default async function Dashboard() {
   const { data: comptes } = await supabase
     .from('comptes')
-    .select('numero, nom, solde_ouverture')
-    .order('numero')
+    .select('numero, nom, type, solde_ouverture')
 
   const actif = comptes
-    ?.filter(c => c.numero >= 1000 && c.numero < 2000)
+    ?.filter(c => c.type === 'ACTIF')
     .reduce((sum, c) => sum + (parseFloat(c.solde_ouverture) || 0), 0)
 
   const passif = comptes
-    ?.filter(c => c.numero >= 2000 && c.numero < 3000)
+    ?.filter(c => c.type === 'PASSIF')
     .reduce((sum, c) => sum + (parseFloat(c.solde_ouverture) || 0), 0)
 
   const capitaux = comptes
-    ?.filter(c => c.numero >= 3000 && c.numero < 4000)
+    ?.filter(c => c.type === 'CAPITAUX')
     .reduce((sum, c) => sum + (parseFloat(c.solde_ouverture) || 0), 0)
 
   const fmt = (n) => n?.toLocaleString('fr-CA', { 
